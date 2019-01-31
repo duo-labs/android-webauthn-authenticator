@@ -12,7 +12,7 @@ Use [JitPack](https://jitpack.io/) to include this repository in your Android
 project.
 
 Add this in your root build.gradle:
-```
+```groovy
 	allprojects {
 		repositories {
 			...
@@ -21,7 +21,7 @@ Add this in your root build.gradle:
 	}
 ```
 Add this to your dependencies list:
-```
+```groovy
 	dependencies {
 		implementation 'com.github.duo-labs:android-webauthn-authenticator:master-SNAPSHOT'
 	}
