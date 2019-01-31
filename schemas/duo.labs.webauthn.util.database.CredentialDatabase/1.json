@@ -1,0 +1,87 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f67d8168ab54bb6acb7a71eb0ae74d7f",
+    "entities": [
+      {
+        "tableName": "credentials",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rpid` TEXT, `username` TEXT, `userhandle` BLOB, `alias` TEXT, `id` BLOB, `keyusecounter` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rpId",
+            "columnName": "rpid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userHandle",
+            "columnName": "userhandle",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyPairAlias",
+            "columnName": "alias",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyUseCounter",
+            "columnName": "keyusecounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_credentials_rpid",
+            "unique": false,
+            "columnNames": [
+              "rpid"
+            ],
+            "createSql": "CREATE  INDEX `index_credentials_rpid` ON `${TABLE_NAME}` (`rpid`)"
+          },
+          {
+            "name": "index_credentials_rpid_username",
+            "unique": false,
+            "columnNames": [
+              "rpid",
+              "username"
+            ],
+            "createSql": "CREATE  INDEX `index_credentials_rpid_username` ON `${TABLE_NAME}` (`rpid`, `username`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f67d8168ab54bb6acb7a71eb0ae74d7f\")"
+    ]
+  }
+}

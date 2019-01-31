@@ -1,0 +1,84 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "c3e3fd9ebd9c09d3c274eea8dd827337",
+    "entities": [
+      {
+        "tableName": "credentials",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roomUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` BLOB, `keyPairAlias` TEXT, `rpId` TEXT, `userHandle` BLOB, `userDisplayName` TEXT, `otherUI` TEXT, `keyUseCounter` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "roomUid",
+            "columnName": "roomUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyPairAlias",
+            "columnName": "keyPairAlias",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rpId",
+            "columnName": "rpId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userHandle",
+            "columnName": "userHandle",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userDisplayName",
+            "columnName": "userDisplayName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "otherUI",
+            "columnName": "otherUI",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyUseCounter",
+            "columnName": "keyUseCounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "roomUid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_credentials_rpId",
+            "unique": false,
+            "columnNames": [
+              "rpId"
+            ],
+            "createSql": "CREATE  INDEX `index_credentials_rpId` ON `${TABLE_NAME}` (`rpId`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c3e3fd9ebd9c09d3c274eea8dd827337\")"
+    ]
+  }
+}

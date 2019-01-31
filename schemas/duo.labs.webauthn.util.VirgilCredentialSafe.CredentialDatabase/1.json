@@ -1,0 +1,76 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "0a21fa0494d05cb2d11dcae70bff588b",
+    "entities": [
+      {
+        "tableName": "credentials",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rpid` TEXT, `userhandle` TEXT, `alias` TEXT, `id` BLOB)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rpId",
+            "columnName": "rpid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userHandle",
+            "columnName": "userhandle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyPairAlias",
+            "columnName": "alias",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "BLOB",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_credentials_rpid",
+            "unique": false,
+            "columnNames": [
+              "rpid"
+            ],
+            "createSql": "CREATE  INDEX `index_credentials_rpid` ON `${TABLE_NAME}` (`rpid`)"
+          },
+          {
+            "name": "index_credentials_rpid_userhandle",
+            "unique": false,
+            "columnNames": [
+              "rpid",
+              "userhandle"
+            ],
+            "createSql": "CREATE  INDEX `index_credentials_rpid_userhandle` ON `${TABLE_NAME}` (`rpid`, `userhandle`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0a21fa0494d05cb2d11dcae70bff588b\")"
+    ]
+  }
+}
