@@ -78,8 +78,8 @@ from the WebAuthn specification, with a few changes necessary for the serializat
         "id": "webauthn.io"
     },
     "user": {
-        "name": "moons",
-        "displayName": "moons",
+        "name": "testuser",
+        "displayName": "Test User",
         "id": "/QIAAAAAAAAAAA==" // base64
     }
 }
