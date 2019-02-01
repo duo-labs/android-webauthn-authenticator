@@ -36,10 +36,9 @@ public class AuthenticatorMakeCredentialOptions {
     public boolean requireUserVerification;
     @SerializedName("credTypesAndPubKeyAlgs")
     public List<Pair<String, Long>> credTypesAndPubKeyAlgs;
-    // TODO: maybe implement excluded credentials
     @SerializedName("excludeCredentials")
     public List<PublicKeyCredentialDescriptor> excludeCredentialDescriptorList;
-    // TODO: consider if keeping this CBOR makes sense
+    // TODO: possibly support extensions in the future
     // @SerializedName("authenticatorExtensions") public byte[] extensions;
 
     public boolean areWellFormed() {
@@ -109,8 +108,8 @@ public class AuthenticatorMakeCredentialOptions {
                 for (JsonElement element : json.getAsJsonArray()) {
                     // elements are dictionaries { "type":"public-key","id":<bytes>,"transports":["usb","nfc","ble","internal"] }
                     String type = element.getAsJsonObject().getAsJsonObject("type").getAsString();
-                    String id_str = element.getAsJsonObject().getAsJsonObject("id").getAsString();
-                    byte[] id = Base64.decode(id_str, Base64.NO_WRAP);
+                    String idString = element.getAsJsonObject().getAsJsonObject("id").getAsString();
+                    byte[] id = Base64.decode(idString, Base64.NO_WRAP);
                     List<String> transports = new ArrayList<>();
                     for (JsonElement transport : element.getAsJsonObject().getAsJsonArray("transports")) {
                         transports.add(transport.getAsString());
