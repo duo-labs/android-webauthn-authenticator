@@ -141,8 +141,8 @@ AuthenticatorGetAssertionOptions getAssertionOptions = AuthenticatorGetAssertion
 ```
 
 Step 7 of [authenticatorGetAssertion](https://www.w3.org/TR/webauthn/#op-get-assertion) requires that
-the authenticator prompt a credential selection. You can use our provided SelectCredentialDialogFragment
-to provide an interface for user-selection, or implement the CredentialSelector interface to receive a
+the authenticator prompt a credential selection. You can use our provided `SelectCredentialDialogFragment`
+to provide an interface for user-selection, or implement the `CredentialSelector` interface to receive a
 callback when it is time to select a credential.
 
 #### Programmatic Credential Selection
