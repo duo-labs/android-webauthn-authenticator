@@ -70,9 +70,9 @@ from the WebAuthn specification, with a few changes necessary for the serializat
 			// "transports" member optional but ignored
 		}
 	]
-    "requireResidentKey": false,
+    "requireResidentKey": true,
     "requireUserPresence": true,
-    "requireUserVerification": false,
+    "requireUserVerification": true,
     "rp": {
         "name": "webauthn.io",
         "id": "webauthn.io"
@@ -84,6 +84,8 @@ from the WebAuthn specification, with a few changes necessary for the serializat
     }
 }
 ```
+
+Note that `requireResidentKey` and `requireUserPresence` are ignored: keys are resident by design, and user presence will always be verified. User verification will always be performed if the `Authenticator` is instantiated with `authenticationRequired` set to `true`; otherwise biometric authentication will not be performed and credential generation will fail if `requireUserVerification` is `true`.
 
 Create the options object from JSON:
 
@@ -138,17 +140,22 @@ Create the options object from JSON:
 AuthenticatorGetAssertionOptions getAssertionOptions = AuthenticatorGetAssertionOptions.fromJSON(options);
 ```
 
-The `getAssertion` operation requires an instance of `CredentialSelector`, which is a simple interface:
+Step 7 of [authenticatorGetAssertion](https://www.w3.org/TR/webauthn/#op-get-assertion) requires that
+the authenticator prompt a credential selection. You can use our provided SelectCredentialDialogFragment
+to provide an interface for user-selection, or implement the CredentialSelector interface to receive a
+callback when it is time to select a credential.
 
-```
+#### Programmatic Credential Selection
+
+If you want to programatically select credentials, you'll need to implement `CredentialSelector`, which is a simple interface:
+
+```java
 public interface CredentialSelector {
     public PublicKeyCredentialSource selectFrom(List<PublicKeyCredentialSource> credentialList);
 }
 ```
 
-#### Programmatic Credential Selection
-
-If you want to programatically select credentials, it can look as simple as this:
+Here's a barebones example:
 
 ```java
 AuthenticatorGetAssertionResult assertionObject = authenticator.getAssertion(getAssertionOptions, new CredentialSelector() {
