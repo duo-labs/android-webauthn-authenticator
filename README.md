@@ -1,4 +1,4 @@
-# Android Webauthn Authenticator Library
+# Android WebAuthn Authenticator Library
 
 This library is meant to serve as an example implementation of the [WebAuthn
 authenticator model](https://www.w3.org/TR/webauthn/#sctn-authenticator-model).
@@ -17,18 +17,18 @@ project.
 
 Add this in your root build.gradle:
 ```groovy
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+    allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
 ```
 Add this to your dependencies list:
 ```groovy
-	dependencies {
-		implementation 'com.github.duo-labs:android-webauthn-authenticator:master-SNAPSHOT'
-	}
+    dependencies {
+        implementation 'com.github.duo-labs:android-webauthn-authenticator:master-SNAPSHOT'
+    }
 ```
 
 ## Usage
@@ -63,15 +63,15 @@ from the WebAuthn specification, with a few changes necessary for the serializat
     "credTypesAndPubKeyAlgs": [
         ["public-key", -7]
     ],
-	"excludeCredentials": [
-		{
-			"type": "public-key",
-			"id": "lVGyXHwz6vdYignKyctbkIkJto/ADbYbHhE7+ss/87o=" // base64
-			// "transports" member optional but ignored
-		}
-	]
+    "excludeCredentials": [
+        {
+            "type": "public-key",
+            "id": "lVGyXHwz6vdYignKyctbkIkJto/ADbYbHhE7+ss/87o=" // base64
+            // "transports" member optional but ignored
+        }
+    ],
     "requireResidentKey": true,
-    "requireUserPresence": true,
+    "requireUserPresence": false,
     "requireUserVerification": true,
     "rp": {
         "name": "webauthn.io",
@@ -159,10 +159,10 @@ Here's a barebones example:
 
 ```java
 AuthenticatorGetAssertionResult assertionObject = authenticator.getAssertion(getAssertionOptions, new CredentialSelector() {
-	@Override
-	public PublicKeyCredentialSource selectFrom(List<PublicKeyCredentialSource> credentialList) {
-		return credentialList.get(0);
-	}
+    @Override
+    public PublicKeyCredentialSource selectFrom(List<PublicKeyCredentialSource> credentialList) {
+        return credentialList.get(0);
+    }
 });
 ```
 

@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -52,7 +53,6 @@ public class AuthenticatorMakeCredentialOptions {
         try {
             profile.enforce(rpEntity.name);
             profile.enforce(userEntity.name);
-            profile.enforce(userEntity.displayName);
         } catch (Exception e) {
             return false;
         }
@@ -104,17 +104,24 @@ public class AuthenticatorMakeCredentialOptions {
         @Override
         public List<PublicKeyCredentialDescriptor> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             List<PublicKeyCredentialDescriptor> excludeList = new ArrayList<>();
-            if (!json.isJsonNull()) {
+            if (json.isJsonArray()) {
                 for (JsonElement element : json.getAsJsonArray()) {
-                    // elements are dictionaries { "type":"public-key","id":<bytes>,"transports":["usb","nfc","ble","internal"] }
-                    String type = element.getAsJsonObject().getAsJsonObject("type").getAsString();
-                    String idString = element.getAsJsonObject().getAsJsonObject("id").getAsString();
-                    byte[] id = Base64.decode(idString, Base64.NO_WRAP);
-                    List<String> transports = new ArrayList<>();
-                    for (JsonElement transport : element.getAsJsonObject().getAsJsonArray("transports")) {
-                        transports.add(transport.getAsString());
+                    // elements are JSON objects that take the form:
+                    // {"type": "public-key", "id": "<base64-bytes>", "transports": ["usb", "nfc", "ble", "internal"] }
+                    if (element.isJsonObject()) {
+                        JsonObject entryObject = element.getAsJsonObject();
+                        String type = entryObject.get("type").getAsString();
+                        String idString = entryObject.get("id").getAsString();
+                        byte[] id = Base64.decode(idString, Base64.NO_WRAP);
+                        List<String> transports = new ArrayList<>();
+                        // "transports" is an optional member
+                        if (entryObject.has("transports")) {
+                            for (JsonElement transport : entryObject.getAsJsonArray("transports")) {
+                                transports.add(transport.getAsString());
+                            }
+                        }
+                        excludeList.add(new PublicKeyCredentialDescriptor(type, id, transports));
                     }
-                    excludeList.add(new PublicKeyCredentialDescriptor(type, id, transports));
                 }
             }
             return excludeList;

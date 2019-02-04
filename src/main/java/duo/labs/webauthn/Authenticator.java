@@ -44,7 +44,6 @@ public class Authenticator {
     private static final Pair<String, Long> ES256_COSE = new Pair<>("public-key", (long) -7);
     CredentialSafe credentialSafe;
     WebAuthnCryptography cryptoProvider;
-    private boolean excludeFlag = false; // whether the excludeCredentialDescriptorList matched one of our credentials
 
     /**
      * Construct a WebAuthn authenticator backed by a credential safe and cryptography provider.
@@ -85,6 +84,10 @@ public class Authenticator {
      * @throws WebAuthnException
      */
     public AttestationObject makeCredential(AuthenticatorMakeCredentialOptions options, Context ctx, CancellationSignal cancellationSignal) throws WebAuthnException, VirgilException {
+        // We use a flag here rather than explicitly invoking deny-behavior here because the
+        // WebAuthn spec asks us to pretend everything is normal for a while (asking user consent)
+        // in order to ensure privacy guarantees.
+        boolean excludeFlag = false; // whether the excludeCredentialDescriptorList matched one of our credentials
 
         // 1. Check if all supplied parameters are syntactically well-formed and of the correct length.
         if (!options.areWellFormed()) {
@@ -103,7 +106,7 @@ public class Authenticator {
             for (PublicKeyCredentialDescriptor descriptor : options.excludeCredentialDescriptorList) {
                 // if we already have a credential identified by this id
                 PublicKeyCredentialSource existingCredentialSource = this.credentialSafe.getCredentialSourceById(descriptor.id);
-                if (existingCredentialSource != null && existingCredentialSource.rpId == options.rpEntity.name && existingCredentialSource.type == descriptor.type) {
+                if (existingCredentialSource != null && existingCredentialSource.rpId.equals(options.rpEntity.name) && existingCredentialSource.type.equals(descriptor.type)) {
                     excludeFlag = true;
                 }
             }
@@ -177,31 +180,23 @@ public class Authenticator {
             } catch (InterruptedException exception) {
                 throw new VirgilException("Could not retrieve attestationObject from BiometricPrompt: " + exception.toString());
             }
+
             if (attestationObject == null) { // null is sent back on failure
                 this.credentialSafe.deleteCredential(credentialSource);
-                // finishing up step 3
-                if (excludeFlag) {
-                    Log.w(TAG, "Credential is excluded by excludeCredentialDescriptorList");
-                    throw new NotAllowedError();
-                }
-                Log.w(TAG, "Biometric Authentication failed.");
+                Log.w(TAG, "Biometric authentication failed.");
                 throw new NotAllowedError();
-            } else {
-                // finishing up step 3
-                if (excludeFlag) {
-                    Log.w(TAG, "Credential is excluded by excludeCredentialDescriptorList");
-                    throw new InvalidStateError();
-                }
             }
         } else {
-            // finishing up step 3
-            if (excludeFlag) {
-                Log.w(TAG, "Credential is excluded by excludeCredentialDescriptorList");
-                // user already consented to first prompt, so we'll return invalidstateerror
-                throw new InvalidStateError();
-            }
-            //MakeCredentialOptions  steps 9 through 13
+            // MakeCredentialOptions steps 9 through 13
             attestationObject = makeInternalCredential(options, credentialSource);
+        }
+
+        // We finish up step 3 here by checking excludeFlag at the end (so we've still gotten
+        // the user's consent to create a credential etc).
+        if (excludeFlag) {
+            this.credentialSafe.deleteCredential(credentialSource);
+            Log.w(TAG, "Credential is excluded by excludeCredentialDescriptorList");
+            throw new InvalidStateError();
         }
         return attestationObject;
     }
@@ -320,7 +315,7 @@ public class Authenticator {
         // get verification, if necessary
         AuthenticatorGetAssertionResult result;
         boolean keyNeedsUnlocking = credentialSafe.keyRequiresVerification(selectedCredential.keyPairAlias);
-        if (options.requireUserPresence || options.requireUserVerification || keyNeedsUnlocking) {
+        if (options.requireUserVerification || keyNeedsUnlocking) {
             if (ctx == null) {
                 throw new VirgilException("User Verification requires passing a context to getAssertion");
             }
