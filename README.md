@@ -12,10 +12,12 @@ to the use of the
 
 ## Quickstart
 
-Use [JitPack](https://jitpack.io/) to include this repository in your Android
-project.
+You can use [JitPack](https://jitpack.io/) to include this module in your Android project, or you can include the source code.
+
+### Using JitPack
 
 Add this in your root build.gradle:
+
 ```groovy
     allprojects {
         repositories {
@@ -25,11 +27,32 @@ Add this in your root build.gradle:
     }
 ```
 Add this to your dependencies list:
+
 ```groovy
     dependencies {
         implementation 'com.github.duo-labs:android-webauthn-authenticator:master-SNAPSHOT'
     }
 ```
+
+### Using Source
+
+#### Pull the source
+
+```
+$ cd ~/your/project/src/directory
+$ git clone git@github.com:duo-labs/android-webauthn-authenticator.git
+```
+
+#### Add the module to your Android project
+
+In Android Studio: `File -> New -> Import Module` and then point it at the `android-webauthn-authenticator` directory.
+
+#### Add the module as a dependency
+
+In Android Studio: `File -> Project Structure -> App -> Dependencies -> + -> Module Dependency`
+
+Select the `android-webauthn-authenticator` module. After a Gradle sync, you should be able to use the
+`duo.labs.webauthn` package.
 
 ## Usage
 
@@ -85,7 +108,9 @@ from the WebAuthn specification, with a few changes necessary for the serializat
 }
 ```
 
-Note that `requireResidentKey` and `requireUserPresence` are ignored: keys are resident by design, and user presence will always be verified. User verification will always be performed if the `Authenticator` is instantiated with `authenticationRequired` set to `true`; otherwise biometric authentication will not be performed and credential generation will fail if `requireUserVerification` is `true`.
+Note that `requireResidentKey` and `requireUserPresence` are effectively ignored: keys are resident by design, and user presence will always be verified. User verification will always be performed if the `Authenticator` is instantiated with `authenticationRequired` set to `true`; otherwise biometric authentication will not be performed and credential generation will fail if `requireUserVerification` is `true`.
+
+(Per the spec, `requireUserPresence` must be the inverse of `requireUserVerification`)
 
 Create the options object from JSON:
 
