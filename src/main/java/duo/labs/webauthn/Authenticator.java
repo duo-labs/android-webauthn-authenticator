@@ -13,7 +13,9 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Exchanger;
 
 import duo.labs.webauthn.exceptions.ConstraintError;
@@ -285,13 +287,17 @@ public class Authenticator {
         // 2-3. Parse allowCredentialDescriptorList
         if (options.allowCredentialDescriptorList != null) {
             List<PublicKeyCredentialSource> filteredCredentials = new ArrayList<>();
-            for (PublicKeyCredentialDescriptor allowedCredDescriptor : options.allowCredentialDescriptorList) {
-                for (PublicKeyCredentialSource credential : credentials) {
-                    if (Arrays.equals(allowedCredDescriptor.id, credential.id)) {
-                        filteredCredentials.add(credential);
-                    }
+            Set<ByteBuffer> allowedCredentialIds = new HashSet<>();
+            for (PublicKeyCredentialDescriptor descriptor: options.allowCredentialDescriptorList) {
+                allowedCredentialIds.add(ByteBuffer.wrap(descriptor.id));
+            }
+
+            for (PublicKeyCredentialSource credential : credentials) {
+                if (allowedCredentialIds.contains(ByteBuffer.wrap(credential.id))) {
+                    filteredCredentials.add(credential);
                 }
             }
+
             credentials = filteredCredentials;
         }
 
