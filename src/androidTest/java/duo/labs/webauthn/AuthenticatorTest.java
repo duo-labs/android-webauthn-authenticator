@@ -109,7 +109,7 @@ public class AuthenticatorTest {
      * @throws CborException
      */
     @Test
-    public void makeCredentialAndGetAssertion() throws VirgilException, WebAuthnException, CborException {
+    public void makeCredentialAndGetAssertionWithAllowCredential() throws VirgilException, WebAuthnException, CborException {
         AuthenticatorMakeCredentialOptions makeCredentialOptions = AuthenticatorMakeCredentialOptions.fromJSON(MAKE_CREDENTIAL_JSON);
         AttestationObject attObj = authenticator.makeCredential(makeCredentialOptions);
         byte[] cborEncoded = attObj.asCBOR();
@@ -119,12 +119,11 @@ public class AuthenticatorTest {
         String fmt = ((UnicodeString) decoded.get(new UnicodeString("fmt"))).getString();
         assertEquals(fmt, "none");
 
-        String credentialId64 = attObj.getCredentialIdBase64();
-        byte[] credentialId = Base64.decode(credentialId64, Base64.NO_WRAP);
+        byte[] credentialId = attObj.getCredentialId();
 
         // Now let's see if we can generate an assertion based on the returned credential ID
         AuthenticatorGetAssertionOptions getAssertionOptions = AuthenticatorGetAssertionOptions.fromJSON(GET_ASSERTION_JSON);
-        getAssertionOptions.allowCredentialDescriptorList.clear();
+        //getAssertionOptions.allowCredentialDescriptorList.clear();
         getAssertionOptions.allowCredentialDescriptorList.add(new PublicKeyCredentialDescriptor("public-key", credentialId, null));
 
         AuthenticatorGetAssertionResult getAssertionResult = authenticator.getAssertion(getAssertionOptions, new CredentialSelector() {
@@ -164,6 +163,12 @@ public class AuthenticatorTest {
         }
     }
 
+    /**
+     * Ensure that the "exclude credentials" functionality keeps us from creating a new credential
+     * when an excluded credential is known.
+     * @throws VirgilException
+     * @throws WebAuthnException
+     */
     @Test
     public void testExcludeCredentials() throws VirgilException, WebAuthnException {
         AuthenticatorMakeCredentialOptions makeCredentialOptions = AuthenticatorMakeCredentialOptions.fromJSON(MAKE_CREDENTIAL_JSON);
@@ -179,5 +184,26 @@ public class AuthenticatorTest {
         } catch (InvalidStateError e) {
             // good! the matching credential descriptor caused the authenticator to reject the request
         }
+    }
+
+
+    /**
+     * Make sure that we can pass an empty allowed credentials list.
+     * @throws VirgilException
+     * @throws WebAuthnException
+     */
+    @Test
+    public void testAllowCredentialsEmpty() throws VirgilException, WebAuthnException {
+        AuthenticatorMakeCredentialOptions makeCredentialOptions = AuthenticatorMakeCredentialOptions.fromJSON(MAKE_CREDENTIAL_JSON);
+        AttestationObject attObj = authenticator.makeCredential(makeCredentialOptions);
+
+        AuthenticatorGetAssertionOptions getAssertionOptions = AuthenticatorGetAssertionOptions.fromJSON(GET_ASSERTION_JSON);
+        getAssertionOptions.allowCredentialDescriptorList.clear();
+        authenticator.getAssertion(getAssertionOptions, new CredentialSelector() {
+            @Override
+            public PublicKeyCredentialSource selectFrom(List<PublicKeyCredentialSource> credentialList) {
+                return credentialList.get(0);
+            }
+        });
     }
 }

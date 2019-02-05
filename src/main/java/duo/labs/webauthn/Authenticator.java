@@ -285,7 +285,7 @@ public class Authenticator {
         List<PublicKeyCredentialSource> credentials = this.credentialSafe.getKeysForEntity(options.rpId);
 
         // 2-3. Parse allowCredentialDescriptorList
-        if (options.allowCredentialDescriptorList != null) {
+        if (options.allowCredentialDescriptorList != null && options.allowCredentialDescriptorList.size() > 0) {
             List<PublicKeyCredentialSource> filteredCredentials = new ArrayList<>();
             Set<ByteBuffer> allowedCredentialIds = new HashSet<>();
             for (PublicKeyCredentialDescriptor descriptor: options.allowCredentialDescriptorList) {
