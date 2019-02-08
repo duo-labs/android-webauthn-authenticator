@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
@@ -30,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -54,4 +65,11 @@ dependencies {
     testImplementation "android.arch.persistence.room:testing:$room_version"
     // precis for unicode name validation
     implementation 'rocks.xmpp:precis:1.0.0'
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
 }
