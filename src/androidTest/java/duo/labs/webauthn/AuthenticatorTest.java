@@ -96,9 +96,7 @@ public class AuthenticatorTest {
     @Test
     public void fromJson() throws VirgilException, WebAuthnException {
         AuthenticatorMakeCredentialOptions options = AuthenticatorMakeCredentialOptions.fromJSON(MAKE_CREDENTIAL_JSON);
-
         AttestationObject attObj = authenticator.makeCredential(options);
-        byte[] cborEncoded = attObj.asCBOR();
     }
 
     /**
