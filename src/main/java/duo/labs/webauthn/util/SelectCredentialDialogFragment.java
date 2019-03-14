@@ -37,7 +37,12 @@ public class SelectCredentialDialogFragment extends DialogFragment implements Cr
         this.exchanger = new Exchanger<PublicKeyCredentialSource>();
 
         // show dialog prompt to user
-        show(fragmentActivity.get().getSupportFragmentManager(), "credential");
+        FragmentActivity fragmentActivityStrongRef = fragmentActivity.get();
+        if (fragmentActivityStrongRef == null) {
+            Log.w(TAG,"FragmentActivity reference was garbage collected. Returning first matching credential.");
+            return credentialList.get(0);
+        }
+        show(fragmentActivityStrongRef.getSupportFragmentManager(), "credential");
 
         // wait to retrieve credential
         PublicKeyCredentialSource selectedCredential;
