@@ -107,6 +107,7 @@ public class CredentialSafe {
                 .setDigests(KeyProperties.DIGEST_SHA256)
                 .setUserAuthenticationRequired(this.authenticationRequired) // fingerprint or similar
                 .setUserConfirmationRequired(false) // TODO: Decide if we support Android Trusted Confirmations
+                .setInvalidatedByBiometricEnrollment(false)
                 .setIsStrongBoxBacked(this.strongboxRequired)
                 .build();
         try {
