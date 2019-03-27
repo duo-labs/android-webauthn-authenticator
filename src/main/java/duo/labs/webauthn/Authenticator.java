@@ -108,7 +108,7 @@ public class Authenticator {
             for (PublicKeyCredentialDescriptor descriptor : options.excludeCredentialDescriptorList) {
                 // if we already have a credential identified by this id
                 PublicKeyCredentialSource existingCredentialSource = this.credentialSafe.getCredentialSourceById(descriptor.id);
-                if (existingCredentialSource != null && existingCredentialSource.rpId.equals(options.rpEntity.name) && existingCredentialSource.type.equals(descriptor.type)) {
+                if (existingCredentialSource != null && existingCredentialSource.rpId.equals(options.rpEntity.id) && existingCredentialSource.type.equals(descriptor.type)) {
                     excludeFlag = true;
                 }
             }
