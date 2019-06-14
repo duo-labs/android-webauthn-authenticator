@@ -174,8 +174,7 @@ public class CredentialSafe {
     public KeyPair getKeyPairByAlias(@NonNull String alias) throws VirgilException {
         KeyStore.Entry keyEntry;
         try {
-            keyEntry = keyStore.getEntry(alias, null);
-            PrivateKey privateKey = ((KeyStore.PrivateKeyEntry) keyEntry).getPrivateKey();
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, null);
             PublicKey publicKey = keyStore.getCertificate(alias).getPublicKey();
             return new KeyPair(publicKey, privateKey);
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
