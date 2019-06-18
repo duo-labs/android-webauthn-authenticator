@@ -33,5 +33,8 @@ public class CredentialSafeTest {
     public void getKeyPairByAlias() throws VirgilException {
         PublicKeyCredentialSource cs = this.credentialSafe.generateCredential("myentity", null, "myname");
         KeyPair keyPair = this.credentialSafe.getKeyPairByAlias(cs.keyPairAlias);
+
+        assertTrue(keyPair.getPrivate() != null);
+        assertTrue(keyPair.getPublic() != null);
     }
 }
