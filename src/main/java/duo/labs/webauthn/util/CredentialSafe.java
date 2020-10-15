@@ -4,7 +4,6 @@ import android.content.Context;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +25,7 @@ import java.security.spec.ECPoint;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import co.nstant.in.cbor.CborBuilder;
 import co.nstant.in.cbor.CborEncoder;
 import co.nstant.in.cbor.CborException;
@@ -106,9 +106,9 @@ public class CredentialSafe {
                 .setAlgorithmParameterSpec(new ECGenParameterSpec(CURVE_NAME))
                 .setDigests(KeyProperties.DIGEST_SHA256)
                 .setUserAuthenticationRequired(this.authenticationRequired) // fingerprint or similar
-                .setUserConfirmationRequired(false) // TODO: Decide if we support Android Trusted Confirmations
-                .setInvalidatedByBiometricEnrollment(false)
-                .setIsStrongBoxBacked(this.strongboxRequired)
+//                .setUserConfirmationRequired(false) // TODO: Decide if we support Android Trusted Confirmations
+//                .setInvalidatedByBiometricEnrollment(false)
+//                .setIsStrongBoxBacked(this.strongboxRequired)
                 .build();
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC, KEYSTORE_TYPE);

@@ -1,8 +1,8 @@
 package duo.labs.webauthn.util.database;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.security.PublicKey;
