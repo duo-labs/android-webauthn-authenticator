@@ -1,11 +1,9 @@
 package duo.labs.webauthn.util;
 
 import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.util.Log;
-
-import java.security.Signature;
-import java.util.concurrent.Exchanger;
-
+import androidx.annotation.RequiresApi;
 import duo.labs.webauthn.Authenticator;
 import duo.labs.webauthn.exceptions.VirgilException;
 import duo.labs.webauthn.exceptions.WebAuthnException;
@@ -13,6 +11,10 @@ import duo.labs.webauthn.models.AttestationObject;
 import duo.labs.webauthn.models.AuthenticatorMakeCredentialOptions;
 import duo.labs.webauthn.models.PublicKeyCredentialSource;
 
+import java.security.Signature;
+import java.util.concurrent.Exchanger;
+
+@RequiresApi(api = Build.VERSION_CODES.P)
 public class BiometricMakeCredentialCallback extends BiometricPrompt.AuthenticationCallback {
     private static final String TAG = "BiometricMakeCredentialCallback";
 

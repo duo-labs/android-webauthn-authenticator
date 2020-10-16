@@ -1,21 +1,20 @@
 package duo.labs.webauthn.util;
 
 import android.hardware.biometrics.BiometricPrompt;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
+import androidx.annotation.RequiresApi;
+import duo.labs.webauthn.Authenticator;
+import duo.labs.webauthn.exceptions.VirgilException;
+import duo.labs.webauthn.exceptions.WebAuthnException;
+import duo.labs.webauthn.models.AuthenticatorGetAssertionOptions;
+import duo.labs.webauthn.models.AuthenticatorGetAssertionResult;
+import duo.labs.webauthn.models.PublicKeyCredentialSource;
 
 import java.security.Signature;
 import java.util.concurrent.Exchanger;
 
-import duo.labs.webauthn.Authenticator;
-import duo.labs.webauthn.exceptions.VirgilException;
-import duo.labs.webauthn.exceptions.WebAuthnException;
-import duo.labs.webauthn.models.AttestationObject;
-import duo.labs.webauthn.models.AuthenticatorGetAssertionOptions;
-import duo.labs.webauthn.models.AuthenticatorGetAssertionResult;
-import duo.labs.webauthn.models.AuthenticatorMakeCredentialOptions;
-import duo.labs.webauthn.models.PublicKeyCredentialSource;
-
+@RequiresApi(api = Build.VERSION_CODES.P)
 public class BiometricGetAssertionCallback extends BiometricPrompt.AuthenticationCallback {
     private static final String TAG = "BiometricGetAssertionCallback";
 

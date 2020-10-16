@@ -3,40 +3,24 @@ package duo.labs.webauthn;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.util.Log;
 import android.util.Pair;
+import duo.labs.webauthn.exceptions.UnknownError;
+import duo.labs.webauthn.exceptions.*;
+import duo.labs.webauthn.models.*;
+import duo.labs.webauthn.util.*;
 
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Exchanger;
-
-import duo.labs.webauthn.exceptions.ConstraintError;
-import duo.labs.webauthn.exceptions.InvalidStateError;
-import duo.labs.webauthn.exceptions.NotAllowedError;
-import duo.labs.webauthn.exceptions.NotSupportedError;
-import duo.labs.webauthn.exceptions.UnknownError;
-import duo.labs.webauthn.exceptions.VirgilException;
-import duo.labs.webauthn.exceptions.WebAuthnException;
-import duo.labs.webauthn.models.AttestationObject;
-import duo.labs.webauthn.models.AuthenticatorGetAssertionOptions;
-import duo.labs.webauthn.models.AuthenticatorGetAssertionResult;
-import duo.labs.webauthn.models.AuthenticatorMakeCredentialOptions;
-import duo.labs.webauthn.models.NoneAttestationObject;
-import duo.labs.webauthn.models.PublicKeyCredentialDescriptor;
-import duo.labs.webauthn.models.PublicKeyCredentialSource;
-import duo.labs.webauthn.util.BiometricGetAssertionCallback;
-import duo.labs.webauthn.util.BiometricMakeCredentialCallback;
-import duo.labs.webauthn.util.CredentialSelector;
-import duo.labs.webauthn.util.CredentialSafe;
-import duo.labs.webauthn.util.WebAuthnCryptography;
 
 public class Authenticator {
     private static final String TAG = "WebauthnAuthenticator";
@@ -145,7 +129,7 @@ public class Authenticator {
         // if we need to obtain user verification, create a biometric prompt for that
         // else just generate a new credential/attestation object
         AttestationObject attestationObject = null;
-        if (credentialSafe.supportsUserVerification()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && credentialSafe.supportsUserVerification()) {
             if (ctx == null) {
                 throw new VirgilException("User Verification requires passing a context to makeCredential");
             }
@@ -321,7 +305,7 @@ public class Authenticator {
         // get verification, if necessary
         AuthenticatorGetAssertionResult result;
         boolean keyNeedsUnlocking = credentialSafe.keyRequiresVerification(selectedCredential.keyPairAlias);
-        if (options.requireUserVerification || keyNeedsUnlocking) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (options.requireUserVerification || keyNeedsUnlocking)) {
             if (ctx == null) {
                 throw new VirgilException("User Verification requires passing a context to getAssertion");
             }

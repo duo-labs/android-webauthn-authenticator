@@ -1,30 +1,10 @@
 package duo.labs.webauthn.util;
 
 import android.content.Context;
+import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyProperties;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.InvalidKeySpecException;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import co.nstant.in.cbor.CborBuilder;
 import co.nstant.in.cbor.CborEncoder;
@@ -32,6 +12,16 @@ import co.nstant.in.cbor.CborException;
 import duo.labs.webauthn.exceptions.VirgilException;
 import duo.labs.webauthn.models.PublicKeyCredentialSource;
 import duo.labs.webauthn.util.database.CredentialDatabase;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECPoint;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 
 /**
@@ -102,14 +92,19 @@ public class CredentialSafe {
      * @throws VirgilException
      */
     private KeyPair generateNewES256KeyPair(String alias) throws VirgilException {
-        KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_SIGN)
+        KeyGenParameterSpec.Builder specBuilder = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_SIGN)
                 .setAlgorithmParameterSpec(new ECGenParameterSpec(CURVE_NAME))
                 .setDigests(KeyProperties.DIGEST_SHA256)
-                .setUserAuthenticationRequired(this.authenticationRequired) // fingerprint or similar
-//                .setUserConfirmationRequired(false) // TODO: Decide if we support Android Trusted Confirmations
-//                .setInvalidatedByBiometricEnrollment(false)
-//                .setIsStrongBoxBacked(this.strongboxRequired)
-                .build();
+                .setUserAuthenticationRequired(this.authenticationRequired);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            specBuilder.setInvalidatedByBiometricEnrollment(false);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                specBuilder.setUserConfirmationRequired(false)
+                        .setIsStrongBoxBacked(this.strongboxRequired);
+        }
+        KeyGenParameterSpec spec = specBuilder.build();
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC, KEYSTORE_TYPE);
             keyPairGenerator.initialize(spec);
