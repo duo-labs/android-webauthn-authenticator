@@ -16,7 +16,7 @@ import java.util.concurrent.Exchanger;
 
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class BiometricMakeCredentialCallback extends BiometricPrompt.AuthenticationCallback {
-    private static final String TAG = "BiometricMakeCredentialCallback";
+    private static final String TAG = "BiometricMCredentialC";
 
     private Authenticator authenticator;
     private AuthenticatorMakeCredentialOptions options;

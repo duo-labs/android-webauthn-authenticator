@@ -16,7 +16,7 @@ import java.util.concurrent.Exchanger;
 
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class BiometricGetAssertionCallback extends BiometricPrompt.AuthenticationCallback {
-    private static final String TAG = "BiometricGetAssertionCallback";
+    private static final String TAG = "BiometricGetAssertionC";
 
     private Authenticator authenticator;
     private AuthenticatorGetAssertionOptions options;
