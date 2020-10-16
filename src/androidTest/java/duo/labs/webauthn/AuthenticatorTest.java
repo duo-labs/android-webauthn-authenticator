@@ -1,9 +1,8 @@
 package duo.labs.webauthn;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.util.Base64;
 
+import androidx.test.InstrumentationRegistry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
