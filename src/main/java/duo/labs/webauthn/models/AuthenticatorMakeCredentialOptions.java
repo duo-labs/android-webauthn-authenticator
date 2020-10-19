@@ -24,6 +24,8 @@ import rocks.xmpp.precis.PrecisProfile;
 import rocks.xmpp.precis.PrecisProfiles;
 
 public class AuthenticatorMakeCredentialOptions {
+    @SerializedName("attestation")
+    public String attestation;
     @SerializedName("clientDataHash")
     public byte[] clientDataHash;
     @SerializedName("challenge")
