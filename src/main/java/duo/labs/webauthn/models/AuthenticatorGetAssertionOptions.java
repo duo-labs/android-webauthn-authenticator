@@ -28,6 +28,8 @@ public class AuthenticatorGetAssertionOptions {
     public boolean requireUserPresence;
     @SerializedName("requireUserVerification")
     public boolean requireUserVerification;
+    @SerializedName("challenge")
+    public String challenge;
     // TODO: authenticatorExtensions
 
     public boolean areWellFormed() {
