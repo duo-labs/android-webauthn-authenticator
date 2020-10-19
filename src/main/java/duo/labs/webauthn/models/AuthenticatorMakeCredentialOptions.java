@@ -1,6 +1,7 @@
 package duo.labs.webauthn.models;
 
 import android.util.Base64;
+import android.util.Log;
 import android.util.Pair;
 
 import com.google.gson.Gson;
@@ -54,7 +55,7 @@ public class AuthenticatorMakeCredentialOptions {
             profile.enforce(rpEntity.name);
             profile.enforce(userEntity.name);
         } catch (Exception e) {
-            return false;
+            Log.d("AuthMakeCredentialO", String.format("Failed to enforce profile, '%s', '%s'", rpEntity.name, userEntity.name), e);
         }
         if (userEntity.id.length <= 0 || userEntity.id.length > 64) {
             return false;
