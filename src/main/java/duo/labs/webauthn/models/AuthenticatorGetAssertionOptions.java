@@ -22,7 +22,7 @@ public class AuthenticatorGetAssertionOptions {
     public String rpId;
     @SerializedName("clientDataHash")
     public byte[] clientDataHash;
-    @SerializedName("allowCredentialDescriptorList")
+    @SerializedName("allowCredentials")
     public List<PublicKeyCredentialDescriptor> allowCredentialDescriptorList;
     @SerializedName("requireUserPresence")
     public boolean requireUserPresence;
