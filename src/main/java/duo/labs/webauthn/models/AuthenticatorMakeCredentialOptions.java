@@ -35,8 +35,8 @@ public class AuthenticatorMakeCredentialOptions {
     public boolean requireUserPresence;
     @SerializedName("requireUserVerification")
     public boolean requireUserVerification;
-    @SerializedName("credTypesAndPubKeyAlgs")
-    public List<Pair<String, Long>> credTypesAndPubKeyAlgs;
+    @SerializedName("pubKeyCredParams")
+    public List<PubKeyCredParam> pubKeyCredParams;
     @SerializedName("excludeCredentials")
     public List<PublicKeyCredentialDescriptor> excludeCredentialDescriptorList;
     // TODO: possibly support extensions in the future
@@ -62,7 +62,7 @@ public class AuthenticatorMakeCredentialOptions {
         if (!(requireUserPresence ^ requireUserVerification)) { // only one may be set
             return false;
         }
-        if (credTypesAndPubKeyAlgs.isEmpty()) {
+        if (pubKeyCredParams.isEmpty()) {
             return false;
         }
         return true;

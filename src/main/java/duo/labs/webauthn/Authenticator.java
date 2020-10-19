@@ -6,7 +6,6 @@ import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.util.Log;
-import android.util.Pair;
 import duo.labs.webauthn.exceptions.UnknownError;
 import duo.labs.webauthn.exceptions.*;
 import duo.labs.webauthn.models.*;
@@ -27,7 +26,7 @@ public class Authenticator {
     public static final int SHA_LENGTH = 32;
     public static final int AUTHENTICATOR_DATA_LENGTH = 141;
 
-    private static final Pair<String, Long> ES256_COSE = new Pair<>("public-key", (long) -7);
+    private static final PubKeyCredParam ES256_COSE = new PubKeyCredParam("public-key", -7);
     CredentialSafe credentialSafe;
     WebAuthnCryptography cryptoProvider;
 
@@ -82,7 +81,7 @@ public class Authenticator {
         }
 
         // 2. Check if we support a compatible credential type
-        if (!options.credTypesAndPubKeyAlgs.contains(ES256_COSE)) {
+        if (!options.pubKeyCredParams.contains(ES256_COSE)) {
             Log.w(TAG, "only ES256 is supported");
             throw new NotSupportedError();
         }
