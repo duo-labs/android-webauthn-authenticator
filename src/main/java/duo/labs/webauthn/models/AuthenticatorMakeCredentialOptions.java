@@ -61,7 +61,7 @@ public class AuthenticatorMakeCredentialOptions {
         } catch (Exception e) {
             Log.d("AuthMakeCredentialO", String.format("Failed to enforce profile, '%s', '%s'", rpEntity.name, userEntity.name), e);
         }
-        if (userEntity.id.length <= 0 || userEntity.id.length > 64) {
+        if (userEntity.id.length > 64) {
             return false;
         }
         if (!(requireUserPresence ^ requireUserVerification)) { // only one may be set
