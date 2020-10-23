@@ -276,7 +276,8 @@ public class Authenticator {
             }
 
             for (PublicKeyCredentialSource credential : credentials) {
-                if (allowedCredentialIds.contains(ByteBuffer.wrap(credential.userHandle))) {
+                if (allowedCredentialIds.contains(ByteBuffer.wrap(credential.id))
+                        || allowedCredentialIds.contains(ByteBuffer.wrap(credential.userHandle))) {
                     filteredCredentials.add(credential);
                 }
             }
